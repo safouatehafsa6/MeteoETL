@@ -1,7 +1,8 @@
-"# MeteoETL" 
+# MeteoETL
 
 ## Fonctionnalités
 
+- **cleaning** : nettoyage des données (TAIR Zahra)
 - **csv-ingest** : chargement des CSV météo et contrôle des colonnes (MASROUR Hafsa)
 
 ## Données

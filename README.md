@@ -3,6 +3,7 @@
 ## Fonctionnalités
 
 - **cleaning** : nettoyage des données (TAIR Zahra)
+- **missing-values** : traitement des valeurs manquantes (AOUZAL Salma)
 - **csv-ingest** : chargement des CSV météo et contrôle des colonnes (MASROUR Hafsa)
 
 ## Données

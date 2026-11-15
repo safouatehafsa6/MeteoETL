@@ -15,8 +15,9 @@ def make_df():
 
 
 def test_duplicates_removed():
+    # 4 lignes : 1 doublon et 1 température impossible -> il en reste 2
     result = clean(make_df())
-    assert result.duplicated().sum() == 0
+    assert len(result) == 2
 
 
 def test_impossible_temperature_removed():
@@ -34,3 +35,18 @@ def test_negative_wind_removed():
     df.loc[2, "wind_speed"] = -5
     result = clean(df)
     assert (result["wind_speed"] >= 0).all()
+
+
+def test_impossible_humidity_removed():
+    df = make_df()
+    df.loc[2, "humidity"] = 150
+    result = clean(df)
+    assert (result["humidity"] <= 100).all()
+    assert len(result) == 1
+
+
+def test_invalid_date_removed():
+    df = make_df()
+    df.loc[2, "date"] = "pas-une-date"
+    result = clean(df)
+    assert len(result) == 1

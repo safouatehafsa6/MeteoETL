@@ -2,6 +2,9 @@ import pandas as pd
 
 NUMERIC_COLUMNS = ["temperature", "humidity", "pressure", "wind_speed"]
 
+TEMP_MIN, TEMP_MAX = -50, 60
+HUMIDITY_MIN, HUMIDITY_MAX = 0, 100
+
 
 def clean(df):
     df = df.copy()
@@ -18,8 +21,8 @@ def clean(df):
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
     # 4. retirer les valeurs aberrantes évidentes (les NaN sont gardés)
-    df = df[df["temperature"].between(-50, 60) | df["temperature"].isna()]
-    df = df[df["humidity"].between(0, 100) | df["humidity"].isna()]
+    df = df[df["temperature"].between(TEMP_MIN, TEMP_MAX) | df["temperature"].isna()]
+    df = df[df["humidity"].between(HUMIDITY_MIN, HUMIDITY_MAX) | df["humidity"].isna()]
     df = df[df["wind_speed"].ge(0) | df["wind_speed"].isna()]
 
     return df.reset_index(drop=True)

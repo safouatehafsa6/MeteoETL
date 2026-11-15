@@ -9,8 +9,14 @@ def handle_missing(df, strategy="mean"):
     strategy : "mean" (remplace par la moyenne de la station), "interpolate"
     (interpolation linéaire par station) ou "drop" (supprime les lignes
     incomplètes). Le calcul se fait station par station.
+
+    Une station qui n'a que des valeurs manquantes dans une colonne garde
+    cette colonne vide avec "mean" et "interpolate" (on n'invente pas de
+    données) ; utiliser "drop" pour supprimer ces lignes.
     """
     df = df.copy()
+    if df.empty:
+        return df
     cols = [c for c in NUMERIC_COLS if c in df.columns]
 
     if strategy == "drop":

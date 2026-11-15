@@ -28,3 +28,10 @@ def test_load_config_empty_file(tmp_path):
 
     with pytest.raises(ValueError):
         load_config(str(empty_file))
+
+def test_load_config_malformed_yaml(tmp_path):
+    malformed_file = tmp_path / "malformed.yaml"
+    malformed_file.write_text("paths:\n  raw_data: [unclosed\n", encoding="utf-8")
+
+    with pytest.raises(ValueError):
+        load_config(str(malformed_file))

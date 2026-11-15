@@ -1,5 +1,3 @@
-"""Module de lecture de la configuration YAML du pipeline MeteoETL."""
-
 from pathlib import Path
 import yaml
 
@@ -16,15 +14,18 @@ def load_config(path: str) -> dict:
 
     Raises:
         FileNotFoundError: Si le fichier n'existe pas.
-        ValueError: Si le fichier est vide ou mal formé.
+        ValueError: Si le fichier est vide, mal formé, ou ne contient pas un dictionnaire.
     """
     config_path = Path(path)
 
     if not config_path.exists():
         raise FileNotFoundError(f"Fichier de configuration introuvable : {path}")
 
-    with open(config_path, "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            config = yaml.safe_load(f)
+    except yaml.YAMLError as e:
+        raise ValueError(f"Le fichier de configuration est mal formé : {path} ({e})") from e
 
     if config is None:
         raise ValueError(f"Le fichier de configuration est vide : {path}")

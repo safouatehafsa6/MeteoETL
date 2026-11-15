@@ -7,12 +7,16 @@ def handle_missing(df, strategy="mean"):
     """Traite les valeurs manquantes d'un DataFrame météo.
 
     strategy : "mean" (remplace par la moyenne de la station), "interpolate"
-    (interpolation linéaire par station) ou "drop" (supprime les lignes
-    incomplètes). Le calcul se fait station par station.
+    (interpolation linéaire par station, dans l'ordre chronologique des
+    dates) ou "drop" (supprime les lignes incomplètes). Le calcul se fait
+    station par station.
 
     Une station qui n'a que des valeurs manquantes dans une colonne garde
     cette colonne vide avec "mean" et "interpolate" (on n'invente pas de
     données) ; utiliser "drop" pour supprimer ces lignes.
+
+    Les lignes dont la station est manquante ne sont pas modifiées avec
+    "mean" et "interpolate" (on ne sait pas à quelle station les rattacher).
     """
     df = df.copy()
     if df.empty:
@@ -25,22 +29,35 @@ def handle_missing(df, strategy="mean"):
     if strategy not in ("mean", "interpolate"):
         raise ValueError(f"Stratégie inconnue : {strategy}")
 
-    if "station" in df.columns:
-        groups = df.groupby("station")[cols]
-    else:
-        groups = None
+    original_index = df.index
+    df = df.reset_index(drop=True)
 
-    if strategy == "mean":
-        if groups is not None:
-            df[cols] = groups.transform(lambda s: s.fillna(s.mean()))
-        else:
-            df[cols] = df[cols].fillna(df[cols].mean())
+    if strategy == "interpolate" and "date" in df.columns:
+        # Interpolation dans l'ordre chronologique (tri stable)
+        order = pd.to_datetime(df["date"], errors="coerce").sort_values(kind="stable").index
+        work = df.loc[order]
     else:
-        if groups is not None:
-            df[cols] = groups.transform(
+        work = df
+
+    if "station" in work.columns:
+        known = work["station"].notna()
+        groups = work.loc[known].groupby("station")[cols]
+        if strategy == "mean":
+            filled = groups.transform(lambda s: s.fillna(s.mean()))
+        else:
+            filled = groups.transform(
                 lambda s: s.interpolate(method="linear", limit_direction="both")
             )
+        work = work.copy()
+        work.loc[known, cols] = filled
+    else:
+        work = work.copy()
+        if strategy == "mean":
+            work[cols] = work[cols].fillna(work[cols].mean())
         else:
-            df[cols] = df[cols].interpolate(method="linear", limit_direction="both")
+            work[cols] = work[cols].interpolate(method="linear", limit_direction="both")
 
-    return df
+    # Retour à l'ordre et à l'index d'origine
+    result = work.sort_index()
+    result.index = original_index
+    return result

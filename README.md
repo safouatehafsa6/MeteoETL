@@ -6,6 +6,10 @@ Pipeline de données météo (Python : pandas, matplotlib, pytest).
 
 - **Configuration YAML** : lecture des paramètres du pipeline (`src/config.py`) — *Soukaina*
 - **cleaning** : nettoyage des données (TAIR Zahra)
+feature/charts
+- **Charts météo** : génération de graphiques PNG pour visualiser l'évolution de la température, de l'humidité, de la pression et de la vitesse du vent par station — Zineb (équipe E3).
+- **missing-values** : traitement des valeurs manquantes (AOUZAL Salma)
+-  develop
 - **csv-ingest** : chargement des CSV météo et contrôle des colonnes (MASROUR Hafsa)
 
 ## Données

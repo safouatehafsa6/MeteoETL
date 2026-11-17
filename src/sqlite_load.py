@@ -1,3 +1,4 @@
+
 import sqlite3
 from pathlib import Path
 import pandas as pd
@@ -14,7 +15,8 @@ REQUIRED_COLUMNS = [
 
 
 def save_to_sqlite(df: pd.DataFrame, db_path: str, table: str = "meteo") -> int:
-    """Sauvegarde un DataFrame météo dans une table SQLite et retourne le nombre de lignes."""
+    """Ajoute les données météo dans une table SQLite et retourne le nombre de lignes ajoutées."""
+
     if df is None or df.empty:
         raise ValueError("Le DataFrame est vide, aucune donnée à sauvegarder.")
 
@@ -26,6 +28,6 @@ def save_to_sqlite(df: pd.DataFrame, db_path: str, table: str = "meteo") -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
 
     with sqlite3.connect(path) as conn:
-        df.to_sql(table, conn, if_exists="replace", index=False)
+        df.to_sql(table, conn, if_exists="append", index=False)
 
     return len(df)

@@ -1,33 +1,79 @@
+
 import sqlite3
 import pandas as pd
 import pytest
+
 from src.sqlite_load import save_to_sqlite
 
 
-def test_save_to_sqlite_ok(tmp_path):
-    df = pd.DataFrame(
-        {
-            "date": ["2026-01-01", "2026-01-02"],
-            "station": ["Casablanca", "Rabat"],
-            "temperature": [18.5, 19.2],
-            "humidity": [70.0, 65.0],
-            "pressure": [1015.0, 1016.0],
-            "wind_speed": [12.0, 10.5],
-        }
-    )
-    db_file = tmp_path / "meteo.db"
+def test_save_to_sqlite(tmp_path):
+    df = pd.DataFrame({
+        "date": ["2026-11-16", "2026-11-17"],
+        "station": ["Casablanca", "Rabat"],
+        "temperature": [22, 24],
+        "humidity": [60, 55],
+        "pressure": [1012, 1013],
+        "wind_speed": [12, 15],
+    })
 
-    rows = save_to_sqlite(df, str(db_file), "meteo_daily")
+    db_path = tmp_path / "meteo.db"
 
-    assert rows == 2
-    assert db_file.exists()
+    result = save_to_sqlite(df, str(db_path))
 
-    with sqlite3.connect(db_file) as conn:
-        loaded = pd.read_sql_query("SELECT * FROM meteo_daily", conn)
+    assert result == 2
 
-    assert len(loaded) == 2
-    assert list(loaded["station"]) == ["Casablanca", "Rabat"]
-def test_save_to_sqlite_empty_raises(tmp_path):
+    with sqlite3.connect(db_path) as conn:
+        saved = pd.read_sql("SELECT * FROM meteo", conn)
+
+    assert len(saved) == 2
+
+
+def test_empty_dataframe(tmp_path):
     df = pd.DataFrame()
-    with pytest.raises(ValueError):
-        save_to_sqlite(df, str(tmp_path / "empty.db"), "meteo_daily")
+    db_path = tmp_path / "meteo.db"
+
+    with pytest.raises(ValueError, match="DataFrame est vide"):
+        save_to_sqlite(df, str(db_path))
+
+
+def test_missing_required_columns(tmp_path):
+    df = pd.DataFrame({
+        "date": ["2026-11-17"],
+        "temperature": [22],
+    })
+
+    db_path = tmp_path / "meteo.db"
+
+    with pytest.raises(ValueError, match="Colonnes manquantes"):
+        save_to_sqlite(df, str(db_path))
+
+
+def test_append_preserves_existing_data(tmp_path):
+    db_path = tmp_path / "meteo.db"
+
+    old_data = pd.DataFrame({
+        "date": ["2026-11-16"],
+        "station": ["Casablanca"],
+        "temperature": [22],
+        "humidity": [60],
+        "pressure": [1012],
+        "wind_speed": [12],
+    })
+
+    new_data = pd.DataFrame({
+        "date": ["2026-11-17"],
+        "station": ["Rabat"],
+        "temperature": [24],
+        "humidity": [55],
+        "pressure": [1013],
+        "wind_speed": [15],
+    })
+
+    save_to_sqlite(old_data, str(db_path))
+    save_to_sqlite(new_data, str(db_path))
+
+    with sqlite3.connect(db_path) as conn:
+        saved = pd.read_sql("SELECT * FROM meteo", conn)
+
+    assert len(saved) == 2
+    assert set(saved["station"]) == {"Casablanca", "Rabat"}

@@ -1,8 +1,13 @@
 # MeteoETL
 
+Pipeline de données météo (Python : pandas, matplotlib, pytest).
+
 ## Fonctionnalités
+feature/config-yaml
+- **Configuration YAML** : lecture des paramètres du pipeline (`src/config.py`) — *Soukaina*
 
 - **csv-ingest** : chargement des CSV météo et contrôle des colonnes (MASROUR Hafsa)
+
 - **cleaning** : nettoyage des données (TAIR Zahra)
 - **missing-values** : traitement des valeurs manquantes (AOUZAL Salma)
 - **Chargement SQLite (`src/sqlite_load.py`)** : sauvegarde des données météo dans une base SQLite — *SAFOUATE Hafsa*

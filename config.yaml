@@ -1,0 +1,26 @@
+
+
+paths:
+  raw_data: "data/raw/meteo.csv"
+  processed_data: "data/processed/"
+  sample_data: "data/sample/"
+  database: "data/meteo.db"
+  charts_output: "outputs/charts/"
+
+thresholds:
+  anomaly_zscore: 3.0
+  missing_max_ratio: 0.2
+  outlier_min: -50
+  outlier_max: 60
+
+strategy:
+  missing_values: "interpolate"  
+  duplicate_handling: "drop"
+
+columns:
+  - date
+  - station
+  - temperature
+  - humidity
+  - pressure
+  - wind_speed

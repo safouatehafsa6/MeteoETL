@@ -72,11 +72,27 @@ def test_does_not_modify_input():
     compute_daily(df)
     pd.testing.assert_frame_equal(df, before)
 
+def test_invalid_date_and_missing_station_are_dropped():
+    df = pd.DataFrame({
+        "date": ["2026-01-01 06:00", "pas une date", "2026-01-01 12:00"],
+        "station": ["Agadir", "Agadir", None],
+        "temperature": [10.0, 20.0, 30.0],
+        "humidity": [50.0, 60.0, 70.0],
+        "pressure": [1010.0, 1011.0, 1012.0],
+        "wind_speed": [5.0, 6.0, 7.0],
+    })
+    result = compute_daily(df)
+    # ligne 2 : date invalide, ligne 3 : station manquante -> seule la ligne 1 reste
+    assert len(result) == 1
+    assert result.iloc[0]["station"] == "Agadir"
+    assert result.iloc[0]["temperature_mean"] == 10.0
+
 
 def test_on_sample_data():
     df = pd.read_csv(SAMPLE)
     result = compute_daily(df)
-    n_days = pd.to_datetime(df["date"]).dt.normalize().nunique()
-    assert len(result) == n_days * df["station"].nunique()
+    days = pd.to_datetime(df["date"]).dt.normalize()
+    n_groups = df.assign(date=days).groupby(["date", "station"]).ngroups
+    assert len(result) == n_groups
     assert (result["temperature_min"] <= result["temperature_mean"]).all()
     assert (result["temperature_mean"] <= result["temperature_max"]).all()

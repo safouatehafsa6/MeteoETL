@@ -9,6 +9,7 @@ Pipeline de données météo (Python : pandas, matplotlib, pytest).
 
 - **cleaning** : nettoyage des données (TAIR Zahra)
 - **missing-values** : traitement des valeurs manquantes (AOUZAL Salma)
+  Détection des anomalies météo (IQR / Z-score, colonne is_anomaly) — CHEMMAOUI Meryem
 - **Chargement SQLite (`src/sqlite_load.py`)** : sauvegarde des données météo dans une base SQLite — *SAFOUATE Hafsa*
 - **Charts météo** : génération de graphiques PNG pour visualiser l'évolution de la température, de l'humidité, de la pression et de la vitesse du vent par station — Zineb (équipe E3).
 

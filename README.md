@@ -3,7 +3,6 @@
 Pipeline de données météo (Python : pandas, matplotlib, pytest).
 
 ## Fonctionnalités
-feature/config-yaml
 - **Configuration YAML** : lecture des paramètres du pipeline (`src/config.py`) — *Soukaina*
 
 - **csv-ingest** : chargement des CSV météo et contrôle des colonnes (MASROUR Hafsa)
@@ -12,6 +11,8 @@ feature/config-yaml
 - **missing-values** : traitement des valeurs manquantes (AOUZAL Salma)
 - **Chargement SQLite (`src/sqlite_load.py`)** : sauvegarde des données météo dans une base SQLite — *SAFOUATE Hafsa*
 - **Charts météo** : génération de graphiques PNG pour visualiser l'évolution de la température, de l'humidité, de la pression et de la vitesse du vent par station — Zineb (équipe E3).
+
+- **daily-aggregates** : statistiques journalières (min, max, moyenne par jour et par station) (MBA ZOGHE Rama Fiona)
 
 ## Données
 

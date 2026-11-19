@@ -3,7 +3,6 @@
 Pipeline de données météo (Python : pandas, matplotlib, pytest).
 
 ## Fonctionnalités
-feature/config-yaml
 - **Configuration YAML** : lecture des paramètres du pipeline (`src/config.py`) — *Soukaina*
 
 - **csv-ingest** : chargement des CSV météo et contrôle des colonnes (MASROUR Hafsa)

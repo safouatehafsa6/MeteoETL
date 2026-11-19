@@ -13,6 +13,8 @@ feature/config-yaml
 - **Chargement SQLite (`src/sqlite_load.py`)** : sauvegarde des données météo dans une base SQLite — *SAFOUATE Hafsa*
 - **Charts météo** : génération de graphiques PNG pour visualiser l'évolution de la température, de l'humidité, de la pression et de la vitesse du vent par station — Zineb (équipe E3).
 
+- **daily-aggregates** : statistiques journalières (min, max, moyenne par jour et par station) (MBA ZOGHE Rama Fiona)
+
 ## Données
 
 L'échantillon `data/sample/meteo_sample.csv` (5 villes marocaines, janvier-février 2026, un relevé toutes les 6 h) est téléchargé avec `scripts/fetch_sample.py` depuis l'API Open-Meteo (réanalyse ERA5).
